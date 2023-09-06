@@ -1,11 +1,10 @@
-import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import { userAuth } from "../../stores/twitch/twitch.slice";
+import { useAppSelector } from "../../hooks/redux";
+import { RootStore } from "../../stores";
 
 function PrivateRoute() {
-  const userAuth: userAuth = useSelector((state: any) => state.twitch.userAuth);
-
-  return userAuth.access_token ? <Outlet /> : <Navigate to="auth" />;
+  const userInfo = useAppSelector((state: RootStore) => state.twitch.user);
+  return userInfo.preferred_username ? <Outlet /> : <Navigate to="auth" />;
 }
 
 export default PrivateRoute;

@@ -1,16 +1,26 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 import { MainPage } from "./pages/MainPage/MainPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import TextToSpeech from "./pages/TextToSpeech/TextToSpeech";
+import PrivateRoute from "./utils/router/privateRoute";
+import { OAuthPopup } from "@tasoskakour/react-use-oauth2";
+import { NotFound } from "./pages/NotFound/NotFound.tsx";
 
-function AppRouter() {
+interface IAppRouterProps {
+  getAuth(): void;
+}
+
+function AppRouter({ getAuth }: IAppRouterProps) {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
+      <Route element={<PrivateRoute />}>
         <Route path="/" element={<MainPage />} />
-        <Route path="/auth" element={<LoginPage />} />
-      </Routes>
-    </BrowserRouter>
+        <Route path="/spokenChat" element={<TextToSpeech />} />
+      </Route>
+      <Route path="/auth" element={<LoginPage getAuth={getAuth} />} />
+      <Route path="/callback" element={<OAuthPopup />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

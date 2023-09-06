@@ -11,6 +11,13 @@
           "font-synthesis"
         ]
       }
-    ]
+    ],
+    "axe/forms": [
+      "default",
+      {
+        "select-name": "off"
+      }
+    ],
+    "typescript-config/is-valid": "off"
   }
 }

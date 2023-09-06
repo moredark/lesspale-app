@@ -1,30 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { UserInfo } from "../../models/twitch.models";
 
-const LS_AUTH_KEY = "TAK";
+const LS_KEY: string = "ACFA";
+const USER_KEY: string = "UIK";
 
-interface TwitchState {
-  userAuth: string;
+export interface AuthState {
+  token: string | null;
+  user: UserInfo;
 }
 
-export interface userAuth {
-  access_token: string;
-  expires_in: number;
-  refresh_token: string;
-  scope: string[];
-  token_type: string;
-}
-
-const initialState: TwitchState = {
-  userAuth: JSON.parse(localStorage.getItem(LS_AUTH_KEY) ?? "{}"),
+const initialState: AuthState = {
+  token: localStorage.getItem(LS_KEY),
+  user: JSON.parse(localStorage.getItem(USER_KEY) ?? "{}"),
 };
 
-export const twitchSlice = createSlice({
-  name: "twitch",
+const twitchSlice = createSlice({
+  name: LS_KEY,
   initialState,
   reducers: {
-    setAuth(state, action: PayloadAction<string>) {
-      state.userAuth = action.payload;
-      localStorage.setItem(LS_AUTH_KEY, JSON.stringify(state.userAuth ?? "{}"));
+    setToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
+      localStorage.setItem(LS_KEY, state.token);
+    },
+    setUser(state, action: PayloadAction<UserInfo>) {
+      state.user = action.payload;
+      localStorage.setItem(USER_KEY, JSON.stringify(state.user));
     },
   },
 });

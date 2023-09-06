@@ -1,106 +1,87 @@
-import { useEffect, useState } from "react";
-// import Input from "../../components/Input/Input";
+import { useEffect } from "react";
+import { RootStore } from "../../stores";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useSpeechSynthesisUtterance from "../../hooks/useSpeechSynthesis";
+import { TttSettings } from "./TtsSettings/TtsSettings";
+import { useAppSelector } from "../../hooks/redux";
+import { useGetUserSettingsQuery, useUpdateUserSettingsMutation } from "../../stores/back/back.api";
 
 function TextToSpeech() {
-  const [volume, setVolume] = useState(0.5);
-  const [rate, setRate] = useState(1);
-  const [pitch, setPitch] = useState(1);
-
-  let msg = new SpeechSynthesisUtterance();
-  msg.volume = volume; // From 0 to 1
-  msg.rate = rate; // From 0.1 to 10 speed
-  msg.pitch = pitch; // From 0 to 2
-  msg.lang = "ru";
+  const userName = useAppSelector((state: RootStore) => state.twitch.user.preferred_username);
+  const { data: userSettings } = useGetUserSettingsQuery(userName);
+  const [updateSettings, { error }] = useUpdateUserSettingsMutation();
+  const applicationToken = useAppSelector((state: RootStore) => state.twitch.token);
+  const { ttsSettings, setTtsSettings, soundMessage } = useSpeechSynthesisUtterance();
 
   useEffect(() => {
-    msg.volume = volume;
-  }, [volume]);
+    if (userSettings) setTtsSettings(userSettings);
+    console.log(userSettings);
+  }, [userSettings]);
+
+  const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}?token=${applicationToken}`);
 
   useEffect(() => {
-    msg.rate = rate;
-  }, [rate]);
+    if (applicationToken) {
+      twitchWs.addEventListener("open", function () {
+        console.log("Websocket connected");
+        twitchWs.send(
+          JSON.stringify({
+            action: "join_room",
+            request_id: new Date().getTime(),
+          })
+        );
+      });
 
-  useEffect(() => {
-    msg.pitch = pitch;
-  }, [pitch]);
+      twitchWs.addEventListener("message", function (event) {
+        const response = JSON.parse(event.data);
+        console.log(response);
+        soundMessage(response);
+        toast(response.name ? `${response.name}: ${response.message}` : `${response.message}`);
+      });
 
-  const WS_URL = "ws://localhost:8080"; //адрес сервера WebSocket
-
-  useEffect(() => {
-    const socket = new WebSocket(WS_URL);
-
-    socket.onopen = function () {
-      console.log("Соединение установлено");
-
-      // Отправляем сообщение на сервер
-      socket.send("Привет, сервер!");
-    };
-
-    socket.onmessage = function (event) {
-      const response = JSON.parse(event.data);
-      console.log(event.data);
-      soundMessage(`${response.username.slice(1)} говорит ${response.message}`);
-    };
-
-    socket.onclose = function (event) {
-      console.log("Соединение закрыто");
-    };
-
+      twitchWs.addEventListener("close", function (event) {
+        console.log("Connection closed");
+      });
+    }
     return () => {
-      socket.close();
+      twitchWs.close();
     };
   }, []);
 
-  function soundMessage(message: string) {
-    msg.text = message;
-    speechSynthesis.speak(msg);
-  }
+  const updateSettingsHandler = () => {
+    updateSettings(ttsSettings)
+      .then((data) => {
+        toast("Settings successfully saved", { theme: "light" });
+      })
+      .catch((e) => {
+        toast(e.message, { theme: "colored" });
+      });
+  };
+
+  const testButtonHandler = () => {
+    const testMessage = { message: "I, Madara Uchiha, recognize you as my strongest opponent!" };
+    soundMessage(testMessage);
+    toast(testMessage.message);
+  };
 
   return (
     <div>
-      TEXT TO SPEECH
-      {/* <Input
-        onChange={(e) => {
-          setVolume(e.target.value);
-        }}
-        type="range"
-        label="Volume"
-        options={{ min: 0, max: 1, step: 0.1, value: volume }}
-      />
-      <Input
-        onChange={(e) => {
-          setRate(e.target.value);
-        }}
-        type="range"
-        label="Rate"
-        options={{ min: 0.1, max: 10, step: 0.1, value: rate }}
-      />
-      <Input
-        onChange={(e) => {
-          setPitch(e.target.value);
-        }}
-        type="range"
-        label="Pitch"
-        options={{ min: 0, max: 2, step: 0.1, value: pitch }}
-      />
-
-      <button
-        onClick={() => {
-          msg.text = "Проверка связи";
-          speechSynthesis.speak(msg);
-        }}
-      >
-        Test
-      </button>
-      <button
-        onClick={() => {
-          setVolume(0.5);
-          setRate(1);
-          setPitch(1);
-        }}
-      >
-        Reset
-      </button> */}
+      <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
+        <h2 className="font-bold uppercase text-3xl">Spoken chat</h2>
+        <div>
+          <p className="text-[24px]"></p>
+          <div className="flex flex-col gap-2 text-center mt-4 text-xl ">
+            <TttSettings setTtsSettings={setTtsSettings} ttsSettings={ttsSettings} />
+            <button onClick={testButtonHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
+              Test
+            </button>
+            <button onClick={updateSettingsHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

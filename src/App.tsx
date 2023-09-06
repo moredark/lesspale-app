@@ -1,41 +1,57 @@
-import { Route, Routes, useSearchParams } from "react-router-dom";
+import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
+import { useEffect } from "react";
 import "./App.css";
-import LoginPage from "./pages/LoginPage/LoginPage";
-import { useLazyGetAuthorizationQuery } from "./stores/twitch/twitch.api";
-import { useEffect, useState } from "react";
+import AppRouter from "./router";
+import NavBar from "./components/Navbar/NavBar";
+import { useConnectToAppMutation } from "./stores/back/back.api";
 import { useActions } from "./hooks/actions";
-import PrivateRoute from "./utils/router/privateRoute";
-import { MainPage } from "./pages/MainPage/MainPage";
-import TextToSpeech from "./pages/TextToSpeech/TextToSpeech";
+import { ToastContainer } from "react-toastify";
+import { useLazyGetUserInfoQuery } from "./stores/twitch/twitch.api";
 
 function App() {
-  const [searchParams] = useSearchParams();
-
-  const [code] = useState(searchParams.get("code"));
-  const [getAuthorization, { data, isError }] = useLazyGetAuthorizationQuery();
-  const { setAuth } = useActions();
-
-  useEffect(() => {
-    if (code) {
-      getAuthorization(code);
-    }
-  }, [code]);
+  const [connectToApp, { data }] = useConnectToAppMutation();
+  const [getUser, {}] = useLazyGetUserInfoQuery();
+  const { setToken, setUser } = useActions();
+  const twitchAuth = useOAuth2({
+    authorizeUrl: "https://id.twitch.tv/oauth2/authorize",
+    clientId: import.meta.env.VITE_CLIENT_ID,
+    redirectUri: `http://localhost:5173/callback`,
+    scope: "chat:read",
+    responseType: "code",
+    exchangeCodeForTokenServerURL: "https://id.twitch.tv/oauth2/token?client_secret=" + import.meta.env.VITE_CLIENT_SECRET,
+    exchangeCodeForTokenMethod: "POST",
+    onSuccess: (payload) => {
+      connectToApp(payload.access_token).unwrap();
+      getUser(payload.access_token)
+        .unwrap()
+        .then((userData) => {
+          setUser(userData);
+        });
+    },
+    onError: (error_) => console.log("Error", error_),
+  });
 
   useEffect(() => {
     if (data) {
-      setAuth(data);
+      setToken(data.access_token);
     }
   }, [data]);
 
   return (
     <div className="app">
-      <Routes>
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<MainPage />}></Route>
-          <Route path="/textToSpeech" element={<TextToSpeech />} />
-        </Route>
-        <Route path="/auth" element={<LoginPage />} />
-      </Routes>
+      {twitchAuth.data?.access_token && <NavBar />}
+      <AppRouter getAuth={twitchAuth.getAuth} />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 }
