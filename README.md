@@ -9,5 +9,5 @@ This app is built to interact with Twitch streamers as well as their viewers.
 - Tailwind
 - Vite
 
-##Status
+## Status
 In development
