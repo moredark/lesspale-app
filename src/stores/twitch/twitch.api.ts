@@ -16,7 +16,7 @@ export const twitchApi = createApi({
           client_secret: import.meta.env.VITE_CLIENT_SECRET,
           code: authCode,
           grant_type: "authorization_code",
-          redirect_uri: import.meta.env.VITE_REDIRECT_URL,
+          redirect_uri: `http://${window.location.host}/auth`,
         },
       }),
     }),
@@ -32,4 +32,4 @@ export const twitchApi = createApi({
   }),
 });
 
-export const { useGetUserInfoQuery, useGetSecretDataQuery, useLazyGetUserInfoQuery } = twitchApi;
+export const { useGetUserInfoQuery, useLazyGetUserInfoQuery } = twitchApi;

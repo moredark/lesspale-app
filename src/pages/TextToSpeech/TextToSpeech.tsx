@@ -10,7 +10,7 @@ import { useGetUserSettingsQuery, useUpdateUserSettingsMutation } from "../../st
 function TextToSpeech() {
   const userName = useAppSelector((state: RootStore) => state.twitch.user.preferred_username);
   const { data: userSettings } = useGetUserSettingsQuery(userName);
-  const [updateSettings, { error }] = useUpdateUserSettingsMutation();
+  const [updateSettings] = useUpdateUserSettingsMutation();
   const applicationToken = useAppSelector((state: RootStore) => state.twitch.token);
   const { ttsSettings, setTtsSettings, soundMessage } = useSpeechSynthesisUtterance();
 
@@ -40,7 +40,7 @@ function TextToSpeech() {
         toast(response.name ? `${response.name}: ${response.message}` : `${response.message}`);
       });
 
-      twitchWs.addEventListener("close", function (event) {
+      twitchWs.addEventListener("close", function () {
         console.log("Connection closed");
       });
     }
@@ -51,7 +51,7 @@ function TextToSpeech() {
 
   const updateSettingsHandler = () => {
     updateSettings(ttsSettings)
-      .then((data) => {
+      .then(() => {
         toast("Settings successfully saved", { theme: "light" });
       })
       .catch((e) => {
@@ -66,20 +66,18 @@ function TextToSpeech() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
-        <h2 className="font-bold uppercase text-3xl">Spoken chat</h2>
-        <div>
-          <p className="text-[24px]"></p>
-          <div className="flex flex-col gap-2 text-center mt-4 text-xl ">
-            <TttSettings setTtsSettings={setTtsSettings} ttsSettings={ttsSettings} />
-            <button onClick={testButtonHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
-              Test
-            </button>
-            <button onClick={updateSettingsHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
-              Save
-            </button>
-          </div>
+    <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
+      <h2 className="font-bold uppercase text-3xl">Spoken chat</h2>
+      <div>
+        <p className="text-[24px]"></p>
+        <div className="flex flex-col gap-2 text-center mt-4 text-xl ">
+          <TttSettings setTtsSettings={setTtsSettings} ttsSettings={ttsSettings} />
+          <button onClick={testButtonHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
+            Test
+          </button>
+          <button onClick={updateSettingsHandler} className="bg-slate-500 rounded mt-4 hover:opacity-70 transition-opacity">
+            Save
+          </button>
         </div>
       </div>
     </div>

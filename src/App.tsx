@@ -15,7 +15,7 @@ function App() {
   const twitchAuth = useOAuth2({
     authorizeUrl: "https://id.twitch.tv/oauth2/authorize",
     clientId: import.meta.env.VITE_CLIENT_ID,
-    redirectUri: `http://localhost:5173/callback`,
+    redirectUri: `http://${window.location.host}/callback`,
     scope: "chat:read",
     responseType: "code",
     exchangeCodeForTokenServerURL: "https://id.twitch.tv/oauth2/token?client_secret=" + import.meta.env.VITE_CLIENT_SECRET,
