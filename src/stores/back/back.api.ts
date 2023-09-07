@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { UserAuth } from "../../models/twitch.models";
 import { RootStore } from "..";
-import { ITtsSettings } from "../../models/models";
+import { LeaderboardResponse, TtsSettings } from "../../models/models";
 
 export const backApi = createApi({
   reducerPath: "api",
@@ -31,19 +31,25 @@ export const backApi = createApi({
       }),
     }),
 
-    getUserSettings: build.query<ITtsSettings, string>({
+    getUserSettings: build.query<TtsSettings, string>({
       query: (userName) => ({
         url: `api/settings/${userName}/`,
       }),
     }),
-    updateUserSettings: build.mutation<ITtsSettings, ITtsSettings>({
+    updateUserSettings: build.mutation<TtsSettings, TtsSettings>({
       query: (args) => ({
         url: `api/settings/${args.user.username}/`,
         method: "PATCH",
         body: args,
       }),
     }),
+
+    getUserLeaderboard: build.query<LeaderboardResponse, string>({
+      query: (userName) => ({
+        url: `api/leaderboard/${userName}/`,
+      }),
+    }),
   }),
 });
 
-export const { useConnectToAppMutation, useGetUserSettingsQuery, useUpdateUserSettingsMutation } = backApi;
+export const { useConnectToAppMutation, useGetUserSettingsQuery, useUpdateUserSettingsMutation, useGetUserLeaderboardQuery } = backApi;

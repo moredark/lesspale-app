@@ -1,9 +1,9 @@
-import { ITtsSettings } from "../../../models/models";
+import { TtsSettings } from "../../../models/models";
 import { supportedLanguages } from "../../../utils/supportedLanguages";
 
 interface IProps {
-  ttsSettings: ITtsSettings;
-  setTtsSettings: (ttsSettings: ITtsSettings) => void;
+  ttsSettings: TtsSettings;
+  setTtsSettings: (ttsSettings: TtsSettings) => void;
 }
 
 export function TttSettings({ ttsSettings, setTtsSettings }: IProps) {

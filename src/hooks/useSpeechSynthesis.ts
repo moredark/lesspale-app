@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { ITtsSettings } from "../models/models";
+import { TtsSettings } from "../models/models";
 
 export default function useSpeechSynthesisUtterance() {
   const [utterance] = useState(new SpeechSynthesisUtterance());
-  const [ttsSettings, setTtsSettings] = useState<ITtsSettings>({
+  const [ttsSettings, setTtsSettings] = useState<TtsSettings>({
     volume: 0.5,
     rate: 1,
     pitch: 1,
@@ -16,7 +16,7 @@ export default function useSpeechSynthesisUtterance() {
   });
 
   utterance.volume = ttsSettings.volume; // From 0 to 1
-  utterance.rate = ttsSettings.rate; // From 0.1 to 10 
+  utterance.rate = ttsSettings.rate; // From 0.1 to 10
   utterance.pitch = ttsSettings.pitch; // From 0 to 2
   utterance.lang = ttsSettings.language;
 
