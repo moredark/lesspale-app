@@ -32,6 +32,7 @@ function App() {
   });
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_BACKEND_URL);
     if (data) {
       setToken(data.access_token);
     }
