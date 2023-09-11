@@ -9,6 +9,7 @@ export default function useSpeechSynthesisUtterance() {
     pitch: 1,
     language: "eng",
     voice_status: 2,
+    delay: 5,
     command: "say",
     user: {
       username: "",

@@ -31,6 +31,10 @@ export function TttSettings({ ttsSettings, setTtsSettings }: IProps) {
     setTtsSettings({ ...ttsSettings, language: e.target.value });
   };
 
+  const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTtsSettings({ ...ttsSettings, delay: Number(e.target.value) });
+  };
+
   return (
     <>
       <select
@@ -71,6 +75,9 @@ export function TttSettings({ ttsSettings, setTtsSettings }: IProps) {
           </option>
         ))}
       </select>
+
+      <label htmlFor="Delay">Delay</label>
+      <input id="Delay" type="number" value={ttsSettings?.delay} onChange={handleDelayChange} className="bg-slate-500 rounded p-2" />
     </>
   );
 }
