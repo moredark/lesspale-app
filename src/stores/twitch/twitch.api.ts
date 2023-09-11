@@ -16,7 +16,7 @@ export const twitchApi = createApi({
           client_secret: import.meta.env.VITE_CLIENT_SECRET,
           code: authCode,
           grant_type: "authorization_code",
-          redirect_uri: `https://a0a5-176-111-211-221.ngrok-free.app/auth`,
+          redirect_uri: import.meta.env.VITE_REDIRECT_URL,
         },
       }),
     }),
