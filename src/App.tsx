@@ -1,47 +1,49 @@
-import { useOAuth2 } from "@tasoskakour/react-use-oauth2";
 import { useEffect } from "react";
 import "./App.css";
 import AppRouter from "./router";
-import NavBar from "./components/Navbar/NavBar";
 import { useConnectToAppMutation } from "./stores/back/back.api";
 import { useActions } from "./hooks/actions";
 import { ToastContainer } from "react-toastify";
-import { useLazyGetUserInfoQuery } from "./stores/twitch/twitch.api";
+import { useLazyGetSecretDataQuery, useLazyGetUserInfoQuery } from "./stores/twitch/twitch.api";
+import { useAppSelector } from "./hooks/redux";
+import { RootStore } from "./stores";
+import NavBar from "./components/Navbar/NavBar";
 
 function App() {
-  const [connectToApp, { data }] = useConnectToAppMutation();
-  const [getUser, {}] = useLazyGetUserInfoQuery();
+  const accessToken = useAppSelector((state: RootStore) => state.twitch.token);
+
+  const [getToken] = useLazyGetSecretDataQuery();
+  const [connectToApp] = useConnectToAppMutation();
+  const [getUser] = useLazyGetUserInfoQuery();
   const { setToken, setUser } = useActions();
-  const twitchAuth = useOAuth2({
-    authorizeUrl: "https://id.twitch.tv/oauth2/authorize",
-    clientId: import.meta.env.VITE_CLIENT_ID,
-    redirectUri: `${window.location.href}callback`,
-    scope: "chat:read",
-    responseType: "code",
-    exchangeCodeForTokenServerURL: "https://id.twitch.tv/oauth2/token?client_secret=" + import.meta.env.VITE_CLIENT_SECRET,
-    exchangeCodeForTokenMethod: "POST",
-    onSuccess: (payload) => {
-      connectToApp(payload.access_token).unwrap();
-      getUser(payload.access_token)
-        .unwrap()
-        .then((userData) => {
-          setUser(userData);
-        });
-    },
-    onError: (error_) => console.log("Error", error_),
-  });
+  const code = new URLSearchParams(window.location.search).get("code");
 
   useEffect(() => {
-    console.log(import.meta.env.VITE_BACKEND_URL);
-    if (data) {
-      setToken(data.access_token);
+    if (code) {
+      getToken(code)
+        .unwrap()
+        .then((resFromTwitch) => {
+          console.log(resFromTwitch);
+          connectToApp(resFromTwitch.access_token)
+            .unwrap()
+            .then((resFromServer) => {
+              console.log(resFromServer);
+              setToken(resFromServer.access_token);
+            });
+
+          getUser(resFromTwitch.access_token)
+            .unwrap()
+            .then((user) => {
+              setUser(user);
+            });
+        });
     }
-  }, [data]);
+  }, [code]);
 
   return (
     <div className="app">
-      {twitchAuth.data?.access_token && <NavBar />}
-      <AppRouter getAuth={twitchAuth.getAuth} />
+      {accessToken && <NavBar />}
+      <AppRouter />
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

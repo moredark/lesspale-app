@@ -16,7 +16,6 @@ function TextToSpeech() {
 
   useEffect(() => {
     if (userSettings) setTtsSettings(userSettings);
-    console.log(userSettings);
   }, [userSettings]);
 
   const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}?token=${applicationToken}`);

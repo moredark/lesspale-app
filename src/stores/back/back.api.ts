@@ -17,7 +17,7 @@ export const backApi = createApi({
   }),
 
   endpoints: (build) => ({
-    connectToApp: build.mutation<UserAuth, string | null>({
+    connectToApp: build.mutation<UserAuth, string | undefined>({
       query: (accessToken: string) => ({
         url: "auth/convert-token",
         method: "POST",

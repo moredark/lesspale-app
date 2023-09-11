@@ -7,19 +7,15 @@ import { OAuthPopup } from "@tasoskakour/react-use-oauth2";
 import { NotFound } from "./pages/NotFound/NotFound.tsx";
 import Leaderboard from "./pages/Leaderboard/Leaderboard.tsx";
 
-interface IAppRouterProps {
-  getAuth(): void;
-}
-
-function AppRouter({ getAuth }: IAppRouterProps) {
+function AppRouter() {
   return (
     <Routes>
       <Route element={<PrivateRoute />}>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/spokenChat" element={<TextToSpeech />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/" element={<MainPage />} />
+      <Route path="/spokenChat" element={<TextToSpeech />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
       </Route>
-      <Route path="/auth" element={<LoginPage getAuth={getAuth} />} />
+      <Route path="/auth" element={<LoginPage />} />
       <Route path="/callback" element={<OAuthPopup />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
