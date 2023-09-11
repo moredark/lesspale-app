@@ -19,6 +19,7 @@ function App() {
   const code = new URLSearchParams(window.location.search).get("code");
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_REDIRECT_URL);
     if (code) {
       getToken(code)
         .unwrap()

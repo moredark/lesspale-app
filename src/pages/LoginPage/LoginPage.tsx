@@ -10,7 +10,6 @@ const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&
 function LoginPage() {
   const userInfo = useAppSelector((state: RootStore) => state.twitch.user);
 
-  console.log(twitchAuthUrl)
   if (userInfo.preferred_username) {
     return <Navigate to="/" />;
   }
