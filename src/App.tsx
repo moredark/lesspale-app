@@ -18,26 +18,25 @@ function App() {
   const { setToken, setUser } = useActions();
   const code = new URLSearchParams(window.location.search).get("code");
 
-  useEffect(() => {
-    console.log(import.meta.env.VITE_BACKEND_URL);
-    if (code) {
-      getToken(code)
-        .unwrap()
-        .then((resFromTwitch) => {
-          console.log(resFromTwitch);
-          connectToApp(resFromTwitch.access_token)
-            .unwrap()
-            .then((resFromServer) => {
-              console.log(resFromServer);
-              setToken(resFromServer.access_token);
-            });
+  const handleTokenAndUser = async (code:string) => {
+    try {
+      const resFromTwitch = await getToken(code).unwrap();
+      console.log(resFromTwitch);
 
-          getUser(resFromTwitch.access_token)
-            .unwrap()
-            .then((user) => {
-              setUser(user);
-            });
-        });
+      const resFromServer = await connectToApp(resFromTwitch.access_token).unwrap();
+      console.log(resFromServer);
+      setToken(resFromServer.access_token);
+
+      const user = await getUser(resFromTwitch.access_token).unwrap();
+      setUser(user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (code) {
+      handleTokenAndUser(code);
     }
   }, [code]);
 
