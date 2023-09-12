@@ -4,13 +4,13 @@ import { useAppSelector } from "../../hooks/redux";
 import { RootStore } from "../../stores";
 
 const twitchAuthUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${
-  window.location.href
+  import.meta.env.VITE_REDIRECT_URL
 }&scope=openid+user%3Aread%3Aemail+chat:read&claims={"id_token":{"email":null},"userinfo":{"email":null,"picture":null,"preferred_username":null}}`;
 
 function LoginPage() {
-  const userInfo = useAppSelector((state: RootStore) => state.twitch.user);
+  const token = useAppSelector((state: RootStore) => state.twitch.token);
 
-  if (userInfo.preferred_username) {
+  if (token) {
     return <Navigate to="/" />;
   }
 
@@ -24,12 +24,7 @@ function LoginPage() {
 
         <img className="mx-auto h-auto w-9/12" src={logo} alt="moredarkie" />
         <a href={twitchAuthUrl}>
-          <div
-            onClick={() => {
-              // getAuth();
-            }}
-            className="bg-purple-900 cursor-pointer hover:bg-opacity-100 hover:text-white text-center text-lg p-5 shadow-md text-gray-400"
-          >
+          <div className="bg-purple-900 cursor-pointer hover:bg-opacity-100 hover:text-white text-center text-lg p-5 shadow-md text-gray-400">
             Login with Twitch
           </div>
         </a>
