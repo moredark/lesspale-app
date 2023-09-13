@@ -7,7 +7,7 @@ export default function NavBar() {
   const userInfo = useAppSelector((state: RootStore) => state.twitch.user);
 
   return (
-    <nav className=" mb-3">
+    <nav className=" pb-3 mainBg">
       <div className="container flex items-center justify-between py-4 mx-auto">
         <div>
           <Link to="/" className="flex items-center">

@@ -45,7 +45,7 @@ function App() {
   return (
     <>
       {loginLoading ? (
-        <div className="w-screen h-screen flex justify-center items-center">
+        <div className="w-screen h-screen flex justify-center items-center mainBg">
           <div>
             <Loader />
             <h2 className="text-gray-300 mt-2 text-2xl">wait a little while :3</h2>

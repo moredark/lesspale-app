@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: white;
+  background-color: none;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,6 +20,10 @@
   --toastify-color-dark: #475569;
   --toastify-text-color-dark: rgb(229, 231, 235);
   --toastify-color-progress-dark: rgb(229, 231, 235);
+}
 
-  @apply bg-slate-500;
+@layer components {
+  .mainBg {
+    @apply bg-slate-500;
+  }
 }

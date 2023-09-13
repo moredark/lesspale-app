@@ -15,7 +15,7 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center mainBg">
       <div className="bg-slate-700 p-4 rounded shadow-2xl w-96">
         <div className="text-center">
           <h2 className="text-5xl text-gray-400 uppercase">Lesspale</h2>

@@ -20,14 +20,16 @@ function Leaderboard() {
   }, [data]);
 
   return (
-    <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
-      <h2 className="font-bold uppercase text-3xl">Leaderboard</h2>
-      <div className="w-full mt-5 mx-10 p-3 flex justify-center items-center ">
-        <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Level</p>
-        <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Nickname</p>
-        <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Experience</p>
+    <div className="w-[100%] h-screen mainBg">
+      <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
+        <h2 className="font-bold uppercase text-3xl">Leaderboard</h2>
+        <div className="w-full mt-5 mx-10 p-3 flex justify-center items-center ">
+          <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Level</p>
+          <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Nickname</p>
+          <p className="text-slate-300 font-bold text-xl min-w-[100px] flex justify-center lg:min-w-[400px]">Experience</p>
+        </div>
+        {isLoading ? <p className="text-2xl">loading...</p> : <div className="w-full">{leaderboardElements}</div>}
       </div>
-      {isLoading ? <p className="text-2xl">loading...</p> : <div className="w-full">{leaderboardElements}</div>}
     </div>
   );
 }

@@ -49,7 +49,7 @@ export function TttSettings({ ttsSettings, setTtsSettings }: IProps) {
       {ttsSettings.voice_status === 3 && (
         <>
           <label htmlFor="Command word">Command word</label>
-          <input id="Command word" type="text" value={ttsSettings?.command} onChange={handleCommandChange} className="bg-slate-500 rounded p-2" />
+          <input id="Command word" type="text" value={ttsSettings?.command} onChange={handleCommandChange} className="mainBg rounded p-2" />
         </>
       )}
 
@@ -77,7 +77,7 @@ export function TttSettings({ ttsSettings, setTtsSettings }: IProps) {
       </select>
 
       <label htmlFor="Delay">Delay</label>
-      <input id="Delay" type="number" value={ttsSettings?.delay} onChange={handleDelayChange} className="bg-slate-500 rounded p-2" />
+      <input id="Delay" type="number" value={ttsSettings?.delay} onChange={handleDelayChange} className="mainBg rounded p-2" />
     </>
   );
 }
