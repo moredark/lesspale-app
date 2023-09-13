@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { UserAuth } from "../../models/twitch.models";
 import { RootStore } from "..";
-import { LeaderboardResponse, TtsSettings } from "../../models/models";
+import { LeaderboardResponse, ServerSecret, TtsSettings } from "../../models/models";
 
 export const backApi = createApi({
   reducerPath: "api",
@@ -49,7 +49,19 @@ export const backApi = createApi({
         url: `api/leaderboard/${userName}/`,
       }),
     }),
+
+    getLeaderboardSecret: build.query<ServerSecret, string>({
+      query: (userName) => ({
+        url: `api/leaderboard/secret/${userName}/`,
+      }),
+    }),
   }),
 });
 
-export const { useConnectToAppMutation, useGetUserSettingsQuery, useUpdateUserSettingsMutation, useGetUserLeaderboardQuery } = backApi;
+export const {
+  useConnectToAppMutation,
+  useGetUserSettingsQuery,
+  useUpdateUserSettingsMutation,
+  useGetUserLeaderboardQuery,
+  useGetLeaderboardSecretQuery,
+} = backApi;

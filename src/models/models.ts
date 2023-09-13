@@ -23,3 +23,7 @@ export interface LeaderboardMember {
   experience: number;
   level: number;
 }
+
+export interface ServerSecret {
+  secret: string;
+}
