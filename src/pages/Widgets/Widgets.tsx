@@ -12,7 +12,7 @@ function Widgets() {
 
   const leaderboardButtonHandler = () => {
     if (data) {
-      clipboardCopy(location.host + "/widget/leaderboard/" + data?.secret);
+      clipboardCopy(location.origin + "/widget/leaderboard/" + data?.secret);
       toast("Successfully copied");
     }
   };
