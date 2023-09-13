@@ -68,7 +68,6 @@ function TextToSpeech() {
       <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
         <h2 className="font-bold uppercase text-3xl">Spoken chat</h2>
         <div>
-          <p className="text-[24px]"></p>
           <div className="flex flex-col gap-2 text-center mt-4 text-xl ">
             <TttSettings setTtsSettings={setTtsSettings} ttsSettings={ttsSettings} />
             <button onClick={testButtonHandler} className="mainBg rounded mt-4 hover:opacity-70 transition-opacity">
