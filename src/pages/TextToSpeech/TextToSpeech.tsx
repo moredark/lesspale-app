@@ -18,8 +18,7 @@ function TextToSpeech() {
     if (userSettings) setTtsSettings(userSettings);
   }, [userSettings]);
 
-  const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}?token=${applicationToken}`);
-
+  const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}twitch/?token=${applicationToken}`);
   useEffect(() => {
     if (applicationToken) {
       twitchWs.addEventListener("open", function () {
@@ -46,7 +45,7 @@ function TextToSpeech() {
     return () => {
       twitchWs.close();
     };
-  }, []);
+  }, [ttsSettings.voice_status, ttsSettings.language, ttsSettings.delay]);
 
   const updateSettingsHandler = () => {
     updateSettings(ttsSettings)
