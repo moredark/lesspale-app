@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import AppRouter from "./router";
 import { useConnectToAppMutation } from "./stores/back/back.api";
@@ -8,9 +8,11 @@ import { useLazyGetSecretDataQuery, useLazyGetUserInfoQuery } from "./stores/twi
 import { useAppSelector } from "./hooks/redux";
 import { RootStore } from "./stores";
 import NavBar from "./components/Navbar/NavBar";
+import Loader from "./components/Loader/Loader";
 
 function App() {
   const accessToken = useAppSelector((state: RootStore) => state.twitch.token);
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const [getToken] = useLazyGetSecretDataQuery();
   const [connectToApp] = useConnectToAppMutation();
@@ -18,13 +20,12 @@ function App() {
   const { setToken, setUser } = useActions();
   const code = new URLSearchParams(window.location.search).get("code");
 
-  const handleTokenAndUser = async (code:string) => {
+  const handleTokenAndUser = async (code: string) => {
+    setLoginLoading(true);
     try {
       const resFromTwitch = await getToken(code).unwrap();
-      console.log(resFromTwitch);
 
       const resFromServer = await connectToApp(resFromTwitch.access_token).unwrap();
-      console.log(resFromServer);
       setToken(resFromServer.access_token);
 
       const user = await getUser(resFromTwitch.access_token).unwrap();
@@ -32,6 +33,7 @@ function App() {
     } catch (error) {
       console.error(error);
     }
+    setLoginLoading(false);
   };
 
   useEffect(() => {
@@ -41,21 +43,32 @@ function App() {
   }, [code]);
 
   return (
-    <div className="app">
-      {accessToken && <NavBar />}
-      <AppRouter />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover
-        theme="dark"
-      />
-    </div>
+    <>
+      {loginLoading ? (
+        <div className="w-screen h-screen flex justify-center items-center">
+          <div>
+            <Loader />
+            <h2 className="text-gray-300 mt-2 text-2xl">wait a little while :3</h2>
+          </div>
+        </div>
+      ) : (
+        <div className="app">
+          {accessToken && <NavBar />}
+          <AppRouter />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable={false}
+            pauseOnHover
+            theme="dark"
+          />
+        </div>
+      )}
+    </>
   );
 }
 
