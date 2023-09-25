@@ -18,33 +18,35 @@ function TextToSpeech() {
     if (userSettings) setTtsSettings(userSettings);
   }, [userSettings]);
 
-  const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}twitch/?token=${applicationToken}`);
   useEffect(() => {
-    if (applicationToken) {
-      twitchWs.addEventListener("open", function () {
-        console.log("Websocket connected");
-        twitchWs.send(
-          JSON.stringify({
-            action: "join_room",
-            request_id: new Date().getTime(),
-          })
-        );
-      });
+    if (userSettings) {
+      const twitchWs = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}twitch/?token=${applicationToken}`);
+      if (applicationToken) {
+        twitchWs.addEventListener("open", function () {
+          console.log("Websocket connected");
+          twitchWs.send(
+            JSON.stringify({
+              action: "join_room",
+              request_id: new Date().getTime(),
+            })
+          );
+        });
 
-      twitchWs.addEventListener("message", function (event) {
-        const response = JSON.parse(event.data);
-        console.log(response);
-        soundMessage(response);
-        toast(response.name ? `${response.name}: ${response.message}` : `${response.message}`);
-      });
+        twitchWs.addEventListener("message", function (event) {
+          const response = JSON.parse(event.data);
+          console.log(response);
+          soundMessage(response);
+          toast(response.name ? `${response.name}: ${response.message}` : `${response.message}`);
+        });
 
-      twitchWs.addEventListener("close", function () {
-        console.log("Connection closed");
-      });
+        twitchWs.addEventListener("close", function () {
+          console.log("Connection closed");
+        });
+      }
+      return () => {
+        twitchWs.close();
+      };
     }
-    return () => {
-      twitchWs.close();
-    };
   }, [ttsSettings.voice_status, ttsSettings.language, ttsSettings.delay]);
 
   const updateSettingsHandler = () => {
