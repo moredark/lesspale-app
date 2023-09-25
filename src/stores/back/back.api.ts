@@ -1,7 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { UserAuth } from "../../models/twitch.models";
 import { RootStore } from "..";
-import { LeaderboardResponse, ServerSecret, TtsSettings } from "../../models/models";
+import { LeaderboardRequest, LeaderboardResponse, ServerSecret, TtsSettings } from "../../models/models";
+
+const API_ENDPOINTS = {
+  CONNECT_TO_APP: "auth/convert-token",
+  GET_USER_SETTINGS: (userName: string) => `api/settings/${userName}/`,
+  UPDATE_USER_SETTINGS: (userName: string) => `api/settings/${userName}/`,
+  GET_USER_LEADERBOARD: "api/leaderboard/",
+  GET_LEADERBOARD_SECRET: (userName: string) => `api/leaderboard/secret/${userName}/`,
+};
 
 export const backApi = createApi({
   reducerPath: "api",
@@ -18,8 +26,8 @@ export const backApi = createApi({
 
   endpoints: (build) => ({
     connectToApp: build.mutation<UserAuth, string | undefined>({
-      query: (accessToken: string) => ({
-        url: "auth/convert-token",
+      query: (accessToken) => ({
+        url: API_ENDPOINTS.CONNECT_TO_APP,
         method: "POST",
         body: {
           client_id: import.meta.env.VITE_CLIENT_ID_BACKEND,
@@ -33,26 +41,31 @@ export const backApi = createApi({
 
     getUserSettings: build.query<TtsSettings, string>({
       query: (userName) => ({
-        url: `api/settings/${userName}/`,
+        url: API_ENDPOINTS.GET_USER_SETTINGS(userName),
       }),
     }),
+
     updateUserSettings: build.mutation<TtsSettings, TtsSettings>({
       query: (args) => ({
-        url: `api/settings/${args.user.username}/`,
+        url: API_ENDPOINTS.UPDATE_USER_SETTINGS(args.user.username),
         method: "PATCH",
         body: args,
       }),
     }),
 
-    getUserLeaderboard: build.query<LeaderboardResponse, string>({
-      query: (userName) => ({
-        url: `api/leaderboard/${userName}/`,
+    getUserLeaderboard: build.query<LeaderboardResponse, LeaderboardRequest>({
+      query: ({ channel, page = 1 }) => ({
+        url: API_ENDPOINTS.GET_USER_LEADERBOARD,
+        params: {
+          channel,
+          page,
+        },
       }),
     }),
 
     getLeaderboardSecret: build.query<ServerSecret, string>({
       query: (userName) => ({
-        url: `api/leaderboard/secret/${userName}/`,
+        url: API_ENDPOINTS.GET_LEADERBOARD_SECRET(userName),
       }),
     }),
   }),

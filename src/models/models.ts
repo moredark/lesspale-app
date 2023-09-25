@@ -14,14 +14,18 @@ interface Channel {
 }
 
 export interface LeaderboardResponse {
-  channel: Channel;
-  leaderboard_members: LeaderboardMember[];
+  count: number;
+  results: LeaderboardMember[];
+}
+
+export interface LeaderboardRequest {
+  channel: string;
+  page?: number;
 }
 
 export interface LeaderboardMember {
   nickname: string;
-  experience: number;
-  level: number;
+  points: number;
 }
 
 export interface ServerSecret {
