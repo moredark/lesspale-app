@@ -1,5 +1,5 @@
 function fallbackCopyTextToClipboard(text: string) {
-  var textArea = document.createElement("textarea");
+  let textArea = document.createElement("textarea");
   textArea.value = text;
 
   // Avoid scrolling to bottom
@@ -12,8 +12,8 @@ function fallbackCopyTextToClipboard(text: string) {
   textArea.select();
 
   try {
-    var successful = document.execCommand("copy");
-    var msg = successful ? "successful" : "unsuccessful";
+    let successful = document.execCommand("copy");
+    let msg = successful ? "successful" : "unsuccessful";
     console.log("Fallback: Copying text command was " + msg);
   } catch (err) {
     console.error("Fallback: Oops, unable to copy", err);
@@ -35,4 +35,19 @@ export const clipboardCopy = (text: string) => {
       console.error("Async: Could not copy text: ", err);
     }
   );
+};
+
+export const numbersFormat = (number: number) => {
+  if (number >= 1e9) {
+    const formattedNumber = number / 1e9;
+    return formattedNumber.toFixed(1) + "b";
+  } else if (number >= 1e6) {
+    const formattedNumber = number / 1e6;
+    return formattedNumber.toFixed(1) + "m";
+  } else if (number >= 1e3) {
+    const formattedNumber = number / 1e3;
+    return formattedNumber.toFixed(1) + "k";
+  } else {
+    return number.toString();
+  }
 };
