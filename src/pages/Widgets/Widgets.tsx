@@ -22,11 +22,16 @@ function Widgets() {
       <div className="flex flex-col justify-center items-center mx-auto bg-slate-600 text-gray-200 container py-5 rounded">
         <h2 className="font-bold uppercase text-3xl">Widgets</h2>
         <div className="flex items-center gap-2 mt-4">
-          <Link to={"/widget/leaderboard/" + data?.secret}>
-            <p className="text-gray-200 text-[24px] bg-slate-700 p-3 rounded-l-md hover:text-gray-100 hover:bg-slate-800 transition-colors">
-              Leaderboard
-            </p>
-          </Link>
+          {data?.secret ? (
+            <Link to={"/widget/leaderboard/" + data?.secret}>
+              <p className="text-gray-200 text-[24px] bg-slate-700 p-3 rounded-l-md hover:text-gray-100 hover:bg-slate-800 transition-colors">
+                Leaderboard
+              </p>
+            </Link>
+          ) : (
+            <p className="text-gray-200 text-[24px] bg-slate-800 p-3 rounded-l-md ">Leaderboard</p>
+          )}
+
           <span
             className="cursor-pointer text-gray-200 text-[24px] bg-slate-700 p-3 rounded-r-md hover:text-gray-100 hover:bg-slate-800 transition-colors"
             onClick={leaderboardButtonHandler}

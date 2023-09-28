@@ -1,9 +1,8 @@
+import { LeaderboardMember } from "../../../models/models";
+import { numbersFormat } from "../../../utils/utils";
+
 interface LeaderboardWidgetElementProps {
-  elementProps: {
-    nickname: string;
-    experience: number;
-    level: number;
-  };
+  elementProps: LeaderboardMember;
   index: number;
 }
 
@@ -23,13 +22,13 @@ function LeaderboardWidgetElement({ elementProps, index }: LeaderboardWidgetElem
       medal = "🤓";
       break;
   }
-  const { nickname, experience } = elementProps;
+  const { nickname, points } = elementProps;
   return (
-    <div className="text-4xl flex justify-between max-w-[380px] my-2">
+    <div className="text-4xl flex justify-between max-w-[480px] my-2">
       <span className="text-green-500">
         {medal} {nickname}
       </span>
-      <span> {experience} exp</span>
+      <span> {numbersFormat(points)}</span>
     </div>
   );
 }

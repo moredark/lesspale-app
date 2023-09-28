@@ -22,8 +22,9 @@ function LeaderboardWidget() {
 
     leaderboardWs.addEventListener("message", function (event) {
       const response = JSON.parse(event.data);
+      console.log(response);
       if (response.leaderboard) {
-        const leaderboardElements = response.leaderboard.leaderboard_members.map((leaderboardElement: LeaderboardMember, index: number) => {
+        const leaderboardElements = response.leaderboard.map((leaderboardElement: LeaderboardMember, index: number) => {
           return <LeaderboardWidgetElement key={leaderboardElement.nickname} index={index} elementProps={leaderboardElement} />;
         });
         setLeaderboardElements(leaderboardElements);
@@ -40,7 +41,7 @@ function LeaderboardWidget() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen text-white bg-black bg-opacity-10">
+    <div className="flex flex-col h-screen text-white bg-black bg-opacity-50">
       <h2 className="text-5xl mb-1 border-b-slate-500 border-solid border-b-2 py-4">Leaderboard</h2>
       {leaderboardElements}
     </div>
